@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ControlPanelWindow</class>
+ <widget class="QWidget" name="ControlPanelWindow">
+  <property name="windowTitle">
+   <string>Control Panel</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+    <columnstretch>1,1,1,1,1,1</columnstretch>
+    <rowstretch>1,1,1,1,1,1,2</rowstretch>
+   <item row="0" column="0" colspan="6">
+    <widget class="QFrame" name="topRowContainer">
+        <layout class="QHBoxLayout" name="topRowLayout">
+        <item>
+            <widget class="QLabel" name="logoLabel">
+            <!-- Logo Label properties -->
+            </widget>
+        </item>
+        <item>
+            <widget class="QLabel" name="versionLabel">
+            <!-- Version Label properties -->
+            </widget>
+        </item>
+        </layout>
+    </widget>
+    </item>
+   <!-- Row 1: Buttons -->
+   <item row="1" column="0">
+    <widget class="QPushButton" name="runButton">
+    <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+     <property name="text">
+      <string>Run</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="stopButton">
+    <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+     <property name="text">
+      <string>Stop</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="pauseButton">
+    <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+     <property name="text">
+      <string>Pause</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="homeButton">
+    <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>1</horstretch>
+            <verstretch>1</verstretch>
+        </sizepolicy>
+    </property>
+     <property name="text">
+      <string>Home</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QPushButton" name="calButton">
+        <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>1</horstretch>
+                <verstretch>1</verstretch>
+            </sizepolicy>
+        </property>
+        <property name="text">
+            <string>Calibrate</string>
+        </property>
+     </widget>
+    </item>
+    <item row="1" column="1" rowspan="3">
+        <widget class="QGroupBox" name="pitchGroup">
+            <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string></string> <!-- Remove the title here -->
+            </property>
+            <layout class="QVBoxLayout" name="pitchVLayout">
+                <item>
+                    <widget class="QLabel" name="pitchLabel">
+                        <property name="text">
+                            <string>Pitch</string>
+                        </property>
+                        <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                        </property>
+                    </widget>
+                </item>
+                <item>
+                    <layout class="QHBoxLayout" name="pitchLayout">
+                        <item>
+                            <widget class="QPushButton" name="pitchDownButton">
+                                <property name="text">
+                                    <string>&lt;</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QLineEdit" name="pitchEdit">
+                                <property name="text">
+                                    <string>0</string> <!-- Set default text to 0 -->
+                                </property>
+                                <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QPushButton" name="pitchUpButton">
+                                <property name="text">
+                                    <string>&gt;</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </item>
+            </layout>
+        </widget>
+    </item>
+
+    <item row="1" column="2" rowspan="3">
+        <widget class="QGroupBox" name="rollGroup">
+            <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>1</horstretch>
+                    <verstretch>1</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string></string> <!-- Remove the title here -->
+            </property>
+            <layout class="QVBoxLayout" name="rollVLayout">
+                <item>
+                    <widget class="QLabel" name="rollLabel">
+                        <property name="text">
+                            <string>Roll</string>
+                        </property>
+                        <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                        </property>
+                    </widget>
+                </item>
+                <item>
+                    <layout class="QHBoxLayout" name="rollLayout">
+                        <item>
+                            <widget class="QPushButton" name="rollDownButton">
+                                <property name="text">
+                                    <string>&lt;</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QLineEdit" name="rollEdit">
+                                <property name="text">
+                                    <string>0</string> <!-- Set default text to 0 -->
+                                </property>
+                                <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QPushButton" name="rollUpButton">
+                                <property name="text">
+                                    <string>&gt;</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </item>
+            </layout>
+        </widget>
+    </item>
+
+    <item row="1" column="3" rowspan="3">
+        <widget class="QGroupBox" name="yawGroup">
+            <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                    <horstretch>1</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string></string> <!-- Remove the title here -->
+            </property>
+            <layout class="QVBoxLayout" name="yawVLayout">
+                <item>
+                    <widget class="QLabel" name="yawLabel">
+                        <property name="text">
+                            <string>Yaw</string>
+                        </property>
+                        <property name="alignment">
+                            <set>Qt::AlignCenter</set>
+                        </property>
+                    </widget>
+                </item>
+                <item>
+                    <layout class="QHBoxLayout" name="yawLayout">
+                        <item>
+                            <widget class="QPushButton" name="yawDownButton">
+                                <property name="text">
+                                    <string>&lt;</string>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QLineEdit" name="yawEdit">
+                                <property name="text">
+                                    <string>0</string> <!-- Set default text to 0 -->
+                                </property>
+                                <property name="alignment">
+                                    <set>Qt::AlignCenter</set>
+                                </property>
+                            </widget>
+                        </item>
+                        <item>
+                            <widget class="QPushButton" name="yawUpButton">
+                                <property name="text">
+                                    <string>&gt;</string>
+                                </property>
+                            </widget>
+                        </item>
+                    </layout>
+                </item>
+            </layout>
+        </widget>
+    </item>
+
+   <!-- Row 3: File Management -->
+   <item row="2" column="5" rowspan="3">
+        <widget class="QListWidget" name="fileList">
+            <property name="maximumSize">
+                <size>
+                    <width>200</width>
+                    <height>16777215</height> <!-- Maximum height -->
+                </size>
+            </property>
+        </widget>
+    </item>
+    <item row="5" column="5">
+        <widget class="QPushButton" name="importButton">
+            <property name="text">
+                <string>Import Files</string>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                    <horstretch>1</horstretch>
+                    <verstretch>2</verstretch>
+                </sizepolicy>
+            </property>
+        </widget>
+    </item>
+
+   <item row="6" column="0" colspan="6">
+    <widget class="QLabel" name="logTitleLabel">
+        <property name="text">
+            <string>Logs</string>
+        </property>
+        <!-- Add other properties like font size, alignment, etc. -->
+    </widget>
+    </item>
+
+<!-- Item for the log display area -->
+    <item row="7" column="0" colspan="6">
+        <widget class="QPlainTextEdit" name="logDisplay">
+            <property name="readOnly">
+                <bool>true</bool>
+            </property>
+            <property name="minimumSize">
+                <size>
+                    <width>200</width>
+                    <height>100</height> <!-- Set a reasonable minimum height -->
+                </size>
+            </property>
+            <!-- Remove maximumHeight if you have it to allow for flexible sizing -->
+            <!-- Add other properties as needed -->
+        </widget>
+    </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

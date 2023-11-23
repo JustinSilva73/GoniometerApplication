@@ -1,0 +1,85 @@
+/* General widget styling */
+QWidget {
+    background-color: #f0f0f0; /* Light grey background */
+}
+
+/* Button styling */
+QPushButton {
+    border: 1px solid #c8c8c8;
+    border-radius: 4px;
+    background-color: #f0f0f0;
+    padding: 10px; /* Padding around text */
+    margin: 5px; /* Margin around buttons */
+    border-radius: 5px; /* Rounded corners */
+}
+
+QPushButton:hover {
+    background-color: #e5e5e5;
+}
+
+QPushButton:pressed {
+    background-color: #d0d0d0;
+}
+
+/* Group box styling */
+QGroupBox {
+    border: 1px solid #c8c8c8;
+    border-radius: 5px;
+    margin-top: 1ex; /* leave space at the top for the title */
+}
+
+QGroupBox::title {
+    padding: 0 3px;
+}
+
+
+/* Label styling */
+QLabel {
+    color: #000000; /* Dark grey text */
+}
+
+
+QRadioButton::indicator {
+    width: 13px;
+    height: 13px;
+}
+
+QCheckBox::indicator {
+    width: 13px;
+    height: 13px;
+}
+
+/* Line edit styling */
+QLineEdit {
+    border: 1px solid #000000; /* Light grey border */
+    border-radius: 3px; /* Rounded corners */
+    padding: 5px; /* Padding inside the line edit */
+}
+
+/* Scroll area styling */
+QScrollArea {
+    border: none; /* No border for scroll area */
+}
+
+/* List widget styling */
+QListWidget {
+    border: 1px solid #c8c8c8;
+    border-radius: 4px;
+}
+/* List widget item styling */
+QListWidget::item {
+    color: #000000; /* This sets the text color to a dark grey */
+}
+/* List widget item styling when selected */
+QListWidget::item:selected {
+    background-color: #dcdcdc; /* Light grey background for selected item */
+    color: #333333; /* Darker text color when selected */
+}
+
+/* Plain text edit styling */
+QPlainTextEdit {
+    background-color: #fff; /* White background */
+    border: 1px solid #ccc; /* Light grey border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 5px; /* Padding inside the text edit */
+}

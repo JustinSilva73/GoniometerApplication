@@ -1,0 +1,112 @@
+QWidget {
+    background-color: #FFFFFF; /* Dark background */
+    color: #000000; /* White text */
+}
+QPushButton {
+    background-color: #E3E3E3;
+    border: none;
+    color: black;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 4px 2px;
+    border-radius: 8px; /* Rounded corners */
+}
+QPushButton#pitchDownButton, QPushButton#pitchUpButton,
+QPushButton#rollDownButton, QPushButton#rollUpButton,
+QPushButton#yawDownButton, QPushButton#yawUpButton {
+    background-color: transparent;
+    border: none; /* Remove border */
+    padding: 0px; /* Adjust padding to make the button smaller */
+    min-width: 20px; /* Smaller buttons for the arrows */
+    max-width: 20px;
+}
+QPushButton:pressed {
+    background-color: #D3D3D3; /* Lighter color on press */
+}
+QGroupBox {
+    border: 2px solid #ffffff; /* White border */
+    border-radius: 5px;
+    margin-top: 1em;
+}
+QGroupBox:title {
+    left: 10px;
+    padding: 0 3px 0 3px;
+    color: #000000; /* White text */
+}
+QLCDNumber {
+    background-color: #121212; /* Dark background for LCD */
+    color: #4CAF50; /* Green text */
+}
+QLabel {
+    font-size: 18px; /* Larger font size for labels */
+}
+QListWidget {
+    border: 1px solid #ffffff; /* White border */
+    color: #E3E3E3; /* White text */
+}
+QPlainTextEdit{
+    background-color: #969696; /* Dark background for LCD */
+}
+
+#topRowContainer{
+    background-color: #09496d; /* Specific background color for topRowContainer */
+}
+#topRowLayout{
+    background-color: #09496d; /* Specific background color for topRowLayout */
+}
+#logoLabel, #versionLabel {
+    background-color: #09496d; /* Apply the same background color */
+    /* Other style properties */
+}
+QLineEdit {
+    font-size: 20px; /* Or any size you prefer */
+    color: #000000; /* Text color */
+    background-color: #f0f0f0; /* Blend with the background, adjust color as needed */
+    border: 1px solid #f0f0f0; /* Border color to blend with background */
+    max-width: 50px; /* Or any width that suits your design */
+    /* Other styling properties */
+}
+
+/* Style for the QListWidget */
+QListWidget#fileList {
+    background-color: #ffffff; /* white background */
+    border: 1px solid #dcdcdc; /* light grey border */
+}
+
+/* Style for QListWidget items */
+QListWidget#fileList::item {
+    border-bottom: 1px solid #eaeaea; /* light grey bottom border for each item */
+    padding: 5px; /* padding around the text */
+}
+
+/* Style for the QPushButton inside the QListWidget item */
+QListWidget#fileList QPushButton {
+    background-color: #f0f0f0; /* light grey background */
+    border: 1px solid #cccccc; /* grey border */
+    border-radius: 5px; /* rounded corners */
+    padding: 5px 10px; /* padding inside the button */
+    margin-right: 5px; /* margin to the right of the button */
+}
+
+/* Style for the QPushButton used to import files */
+QPushButton#importButton {
+    background-color: #c9c9c9; /* green background */
+    color: white; /* white text */
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+QPushButton#removeButton {
+    border: none;
+    background: transparent;
+    color: #555;  /* or any color you prefer */
+    font-weight: bold;
+    padding: 0px;
+    margin: 0px;
+}
+QPushButton#removeButton:hover {
+    color: #ff0000;  /* color change on hover for visual feedback */
+}
