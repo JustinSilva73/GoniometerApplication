@@ -51,34 +51,33 @@ QPlainTextEdit{
 }
 
 #topRowContainer{
-    background-color: #09496d; /* Specific background color for topRowContainer */
+    background-color: #09496d; 
 }
 #topRowLayout{
-    background-color: #09496d; /* Specific background color for topRowLayout */
+    background-color: #09496d; 
 }
 #logoLabel, #versionLabel {
-    background-color: #09496d; /* Apply the same background color */
+    background-color: #09496d; 
     /* Other style properties */
 }
 QLineEdit {
-    font-size: 20px; /* Or any size you prefer */
-    color: #000000; /* Text color */
-    background-color: #f0f0f0; /* Blend with the background, adjust color as needed */
-    border: 1px solid #f0f0f0; /* Border color to blend with background */
-    max-width: 50px; /* Or any width that suits your design */
-    /* Other styling properties */
+    font-size: 20px; 
+    color: #000000; 
+    background-color: #f0f0f0; 
+    border: 1px solid #f0f0f0; 
+    max-width: 50px; 
+    
 }
 
-/* Style for the QListWidget */
 QListWidget#fileList {
-    background-color: #ffffff; /* white background */
-    border: 1px solid #dcdcdc; /* light grey border */
+    background-color: #ffffff; 
+    border: 1px solid #dcdcdc;
 }
 
 /* Style for QListWidget items */
 QListWidget#fileList::item {
-    border-bottom: 1px solid #eaeaea; /* light grey bottom border for each item */
-    padding: 5px; /* padding around the text */
+    border-bottom: 1px solid #eaeaea; 
+    padding: 5px; 
 }
 
 /* Style for the QPushButton inside the QListWidget item */
