@@ -5,7 +5,6 @@ int currentAngle = 90; // Starting position
 
 void setup() {
   myservo.attach(12); // Attach the servo to pin 12
-  myservo.write(currentAngle); // Set servo to the starting position
   Serial.begin(115200); // Start serial communication at 115200 baud
 }
 

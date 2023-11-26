@@ -11,12 +11,13 @@ class StartingRunChecks:
 
     def check_serial_connection(self):
         try:
-            # Attempt to create a serial connection
             with serial.Serial(self.com_port, self.baud_rate, timeout=1) as ser:
                 if ser.isOpen():
                     self.log_display.appendPlainText(f"Connected successfully to {self.com_port} at {self.baud_rate} baud.")
+                    return True
                 else:
                     self.log_display.appendPlainText(f"Failed to open serial port {self.com_port}.")
+                    return False
         except serial.SerialException as e:
             # Handle the exception and append to logDisplay
             self.log_display.appendPlainText(f"Serial connection failed: {e}")

@@ -1,72 +1,99 @@
 from PyQt5 import QtWidgets
-from Connection import StartingRunChecks
 import serial
 import time
+import serial.tools.list_ports
+import pandas as pd
+from Connection import StartingRunChecks
+
+def get_file_paths(self):
+        try:
+            with open('imported_files.txt', 'r') as file:
+                return [line.strip() for line in file if line.strip()]
+        except FileNotFoundError:
+            print("imported_files.txt not found.")
+            return []
 
 class RunManager:
-    def __init__(self):
-        self.current_run_type = None
-        self.current_angle = 90  # Initial angle, adjust as necessary
+    ser = None  # class-level attribute for the serial connection
+    current_angle = 90  # class-level attribute for the angle
 
+    
     def set_run_type(self, run_type):
-        self.current_run_type = run_type
+        self.run_type_id = run_type
 
     def get_run_type(self):
-        return self.current_run_type
+        # Returns the current run type instance
+        return self.run_type_id
+    
+    def load_flight_data(self, file_path):
+        self.flight_data = pd.read_csv(file_path)
+        print("Flight data loaded successfully.")
 
-    def adjust_angle_if_indefinite(self, angle_change):
-        new_angle = self.current_angle + angle_change
-        # Ensure the new angle is within the valid range (0 to 180)
-        new_angle = max(0, min(180, new_angle))
-        
-        # Move the servo to the new angle
-        self.move_servo_to_angle(new_angle)
+    
+    def open_serial_connection(self):
+        if not RunManager.ser or not RunManager.ser.isOpen():
+            try:
+                RunManager.ser = serial.Serial('COM4', 115200, timeout=1)
+                print("Serial connection opened.")
+            except serial.SerialException as e:
+                print(f"Error opening serial connection: {e}")
 
-        # Update the current angle
-        self.current_angle = new_angle
+    def close_serial_connection(self):
+        if RunManager.ser and RunManager.ser.isOpen():
+            RunManager.ser.close()
+            print("Serial connection closed.")
 
     def send_angle_to_arduino(self):
-        try:
-            with serial.Serial('COM4', 115200, timeout=1) as ser:
-                time.sleep(3)
-                command = f"{self.current_angle}\n"  # Command with a newline delimiter
-                ser.write(command.encode())
-                print(f"Sent angle {self.current_angle} to Arduino")
-                time.sleep(2)
-                while ser.in_waiting:
-                    response = ser.readline().decode().strip()
-                    print("Received from Arduino:", response)
+        if not RunManager.ser or not RunManager.ser.isOpen():
+            print("Serial connection not open. Attempting to open...")
+            self.open_serial_connection()
+            if not RunManager.ser or not RunManager.ser.isOpen():
+                print("Failed to open serial connection.")
+                return
 
+        try:
+            command = f"{RunManager.current_angle}\n"
+            RunManager.ser.write(command.encode())
+            print(f"Sent command: {command}")
         except serial.SerialException as e:
             print(f"Serial communication error: {e}")
 
+
+    def create_run_type(self, run_type_str):
+            if run_type_str == 'Indefinite':
+                from IndefiniteRun import IndefiniteRun
+                return IndefiniteRun()
+            elif run_type_str == 'Steps':
+                from StepsRun import StepsRun
+                return StepsRun()
+            elif run_type_str == 'Files':
+                from FilesRun import FilesRun
+                return FilesRun()
+            return None
+    
+    def start_run_type(self, run_type_str, log_display, run_options_dialog):
+    # method implementation
+        file_paths = self.get_file_paths()
+        run_type_instance = self.create_run_type(run_type_str)
+        
+        if run_type_instance:
+            if run_type_str == 'Files':
+                run_type_instance.initialize_with_files(file_paths)
+                log_display.appendPlainText(f"Loaded file paths from imported_files.txt")
+            elif run_type_str == 'Steps':
+                pass  # Initialize Steps run if necessary
+            elif run_type_str == 'Indefinite':
+                pass  # Initialize Indefinite run if necessary
+
+            log_display.appendPlainText(f"Starting {run_type_str} mode")
+            self.set_run_type(run_type_instance)
+
+            run_checks = StartingRunChecks(log_display, "COM4", 115200)
+            if run_checks.check_serial_connection():
+                self.open_serial_connection()  # Open serial connection after successful checks
+            run_options_dialog.accept()
+    
+        else:
+            log_display.appendPlainText(f"Run type {run_type_str} not recognized.")
+
 run_manager = RunManager()
-
-def handle_start_button_click(run_options_dialog):
-    run_type = None
-    if run_options_dialog.ui.radioButtonSteps.isChecked():
-        run_type = 'Steps'
-    elif run_options_dialog.ui.radioButtonFiles.isChecked():
-        run_type = 'Files'
-    elif run_options_dialog.ui.radioButtonIndefinite.isChecked():
-        run_type = 'Indefinite'
-
-    if run_type is None:
-        QtWidgets.QMessageBox.warning(run_options_dialog, "Warning", "Please select a run type.")
-    else:
-        run_manager.set_run_type(run_type)
-        run_options_dialog.parent().logDisplay.appendPlainText(f"Mode selected: {run_type}")
-        run_options_dialog.accept()  # This will close the dialog
-
-    log_display = run_options_dialog.parent().logDisplay
-    run_checks = StartingRunChecks(log_display, "COM4", 115200)  # Adjust COM port and baud rate as necessary
-    run_checks.check_serial_connection()
-
-    # Close the dialog or other actions
-    run_options_dialog.accept()
-
-def get_current_run_type():
-    """
-    Function to retrieve the current run type.
-    """
-    return run_manager.get_run_type()

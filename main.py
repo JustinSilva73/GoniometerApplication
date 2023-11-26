@@ -5,15 +5,35 @@ sys.path.append('./Backend')
 sys.path.append('./Frontend')
 
 from PyQt5 import QtWidgets, QtCore, QtGui
-from servo_control import Ui_ControlPanelWindow
+from ControlPanel import Ui_ControlPanelWindow
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow
+from PyQt5.QtWidgets import QApplication, QLineEdit, QMainWindow, QLabel
 from RunPopUp import Ui_RunOptionsDialog
-from ModeRun import handle_start_button_click, RunManager
+from ModeRun import run_manager  
+from PyQt5.QtGui import QPixmap
 from Connection import StartingRunChecks
 
-run_manager = RunManager()
+
+def handle_start_button_click(run_options_dialog):
+    # Determine the run type based on the selected radio button
+        run_type_str = None
+        if run_options_dialog.ui.radioButtonSteps.isChecked():
+            run_type_str = 'Steps'
+        elif run_options_dialog.ui.radioButtonFiles.isChecked():
+            run_type_str = 'Files'
+            
+        elif run_options_dialog.ui.radioButtonIndefinite.isChecked():
+            run_type_str = 'Indefinite'
+
+        if run_type_str is None:
+            QtWidgets.QMessageBox.warning(run_options_dialog, "Warning", "Please select a run type.")
+            return
+
+        run_type = run_manager.create_run_type(run_type_str)
+        run_manager.set_run_type(run_type)
+        
+    
 class RunOptionsDialog(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(RunOptionsDialog, self).__init__(parent)
@@ -21,7 +41,7 @@ class RunOptionsDialog(QtWidgets.QDialog):
         self.ui.setupUi(self)
         self.applyStylingRunOptions()
         self.ui.pushButtonStart.clicked.connect(lambda: handle_start_button_click(self))
-
+        
 
     def handleFileSelectionChanged(self, item):
         if item.checkState() == QtCore.Qt.Checked:
@@ -39,7 +59,7 @@ class RunOptionsDialog(QtWidgets.QDialog):
                 print("Stylesheet applied successfully.")
         except Exception as e:
             print("Error applying stylesheet:", e)
-
+    
 
 class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
     def __init__(self, parent=None):
@@ -50,7 +70,10 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
         self.load_file_paths()
         self.populate_file_management_list()
         self.setFocusPolicy(Qt.StrongFocus)
+        logo_image = QPixmap('Assets/Logo.jpg')
 
+        # Set the pixmap to the existing logoLabel
+        self.logoLabel.setPixmap(logo_image.scaled(self.logoLabel.size(), QtCore.Qt.KeepAspectRatio))
         # Get the screen resolution
         screen = QtWidgets.QApplication.primaryScreen()
         rect = screen.availableGeometry()
@@ -66,14 +89,10 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
         self.move(rect.center() - self.rect().center())
         screen_height = self.screen().size().height()
         font_size = screen_height * 0.02  # Example: 2% of screen height
-
-        # Create the QLineEdit and set the calculated font size
-        line_edit = QLineEdit(self)
-        font = QFont()
-        font.setPointSizeF(font_size)
-        line_edit.setFont(font)
         self.runButton.clicked.connect(self.show_run_options)
         self.importButton.clicked.connect(self.import_csv_files)
+        self.stopButton.clicked.connect(self.handle_stop_button_click)  # Assuming you have a stopButton
+
 
     def load_file_paths(self):
         try:
@@ -83,12 +102,19 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
             print("No previously imported files found.")
 
     def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_Left:
-            print("key pressed left")
-            run_manager.adjust_angle_if_indefinite(-10)
-        elif event.key() == QtCore.Qt.Key_Right:
-            run_manager.adjust_angle_if_indefinite(10)
-            print("key pressed right")
+        current_run_type = run_manager.get_run_type()
+        if hasattr(current_run_type, 'run_type_id') and current_run_type.run_type_id == 'Indefinite':
+            if not run_manager.ser or not run_manager.ser.isOpen():
+                print("Serial connection not open. Please press Start.")
+                return
+
+            if event.key() == QtCore.Qt.Key_Left:
+                print("key pressed left")
+                current_run_type.adjust_angle(-10)
+            elif event.key() == QtCore.Qt.Key_Right:
+                print("key pressed right")
+                current_run_type.adjust_angle(10)
+
 
 
     def populate_file_management_list(self):
@@ -228,7 +254,10 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
             self.run_options_dialog.ui.fileListWidget.addItem(item)
         self.run_options_dialog.show()
 
-    
+    def handle_stop_button_click(self):
+        run_manager.close_serial_connection()
+
+
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     mainWindow = ControlPanelApp()
