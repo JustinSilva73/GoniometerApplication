@@ -5,14 +5,6 @@ import serial.tools.list_ports
 import pandas as pd
 from Connection import StartingRunChecks
 
-def get_file_paths(self):
-        try:
-            with open('imported_files.txt', 'r') as file:
-                return [line.strip() for line in file if line.strip()]
-        except FileNotFoundError:
-            print("imported_files.txt not found.")
-            return []
-
 class RunManager:
     ser = None  # class-level attribute for the serial connection
     current_angle = 90  # class-level attribute for the angle
@@ -59,41 +51,38 @@ class RunManager:
             print(f"Serial communication error: {e}")
 
 
-    def create_run_type(self, run_type_str):
-            if run_type_str == 'Indefinite':
-                from IndefiniteRun import IndefiniteRun
-                return IndefiniteRun()
-            elif run_type_str == 'Steps':
-                from StepsRun import StepsRun
-                return StepsRun()
-            elif run_type_str == 'Files':
-                from FilesRun import FilesRun
-                return FilesRun()
-            return None
-    
-    def start_run_type(self, run_type_str, log_display, run_options_dialog):
-    # method implementation
-        file_paths = self.get_file_paths()
-        run_type_instance = self.create_run_type(run_type_str)
-        
-        if run_type_instance:
-            if run_type_str == 'Files':
-                run_type_instance.initialize_with_files(file_paths)
-                log_display.appendPlainText(f"Loaded file paths from imported_files.txt")
-            elif run_type_str == 'Steps':
-                pass  # Initialize Steps run if necessary
-            elif run_type_str == 'Indefinite':
-                pass  # Initialize Indefinite run if necessary
+    def create_run_type(self, run_type_str, file_paths=None):
+        if run_type_str == 'Indefinite':
+            from IndefiniteRun import IndefiniteRun
+            return IndefiniteRun()
+        elif run_type_str == 'Steps':
+            from StepsRun import StepsRun
+            return StepsRun()
+        elif run_type_str == 'Files':
+            from FilesRun import FilesRun
+            return FilesRun(file_paths)  # Pass file paths to FilesRun
+        return None
 
-            log_display.appendPlainText(f"Starting {run_type_str} mode")
+    
+    def start_run_type(self, run_type_str, log_display, run_options_dialog, selected_files=None):
+        if run_type_str == 'Files':
+            if selected_files:
+                log_display.appendPlainText(f"Selected file paths: {selected_files}")
+                
+            else:
+                log_display.appendPlainText("No files selected.")
+        elif run_type_str == 'Steps':
+            pass  # Initialize Steps run if necessary
+        elif run_type_str == 'Indefinite':
+            pass  # Initialize Indefinite run if necessary
+
+        log_display.appendPlainText(f"Starting {run_type_str} mode")
+        run_checks = StartingRunChecks(log_display, "COM4", 115200)
+        if run_checks.check_serial_connection():
+            self.open_serial_connection()  # Open serial connection after successful checks
+            run_options_dialog.accept()
+            run_type_instance = self.create_run_type(run_type_str, selected_files)
             self.set_run_type(run_type_instance)
 
-            run_checks = StartingRunChecks(log_display, "COM4", 115200)
-            if run_checks.check_serial_connection():
-                self.open_serial_connection()  # Open serial connection after successful checks
-            run_options_dialog.accept()
-    
-        else:
-            log_display.appendPlainText(f"Run type {run_type_str} not recognized.")
 
 run_manager = RunManager()

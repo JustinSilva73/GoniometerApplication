@@ -14,42 +14,77 @@ from ModeRun import run_manager
 from PyQt5.QtGui import QPixmap
 from Connection import StartingRunChecks
 
+def get_file_paths(self):
+        try:
+            with open('imported_files.txt', 'r') as file:
+                return [line.strip() for line in file if line.strip()]
+        except FileNotFoundError:
+            print("imported_files.txt not found.")
+            return []
 
 def handle_start_button_click(run_options_dialog):
     # Determine the run type based on the selected radio button
-        run_type_str = None
-        if run_options_dialog.ui.radioButtonSteps.isChecked():
-            run_type_str = 'Steps'
-        elif run_options_dialog.ui.radioButtonFiles.isChecked():
-            run_type_str = 'Files'
-            
-        elif run_options_dialog.ui.radioButtonIndefinite.isChecked():
-            run_type_str = 'Indefinite'
+    run_type_str = None
+    if run_options_dialog.ui.radioButtonSteps.isChecked():
+        run_type_str = 'Steps'
+    elif run_options_dialog.ui.radioButtonFiles.isChecked():
+        run_type_str = 'Files'
+    elif run_options_dialog.ui.radioButtonIndefinite.isChecked():
+        run_type_str = 'Indefinite'
 
-        if run_type_str is None:
-            QtWidgets.QMessageBox.warning(run_options_dialog, "Warning", "Please select a run type.")
-            return
+    if run_type_str is None:
+        QtWidgets.QMessageBox.warning(run_options_dialog, "Warning", "Please select a run type.")
+        return
 
-        run_type = run_manager.create_run_type(run_type_str)
-        run_manager.set_run_type(run_type)
+    log_display = run_options_dialog.parent().logDisplay
+    log_display.appendPlainText(f"Mode selected: {run_type_str}")
+
+    # Retrieve selected files if 'Files' run type is selected
+    selected_files = run_options_dialog.selectedFilePaths if run_type_str == 'Files' else None
+
+    run_manager.start_run_type(run_type_str, log_display, run_options_dialog, selected_files)
+
         
     
 class RunOptionsDialog(QtWidgets.QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, importedFiles=None):
         super(RunOptionsDialog, self).__init__(parent)
         self.ui = Ui_RunOptionsDialog()
         self.ui.setupUi(self)
         self.applyStylingRunOptions()
         self.ui.pushButtonStart.clicked.connect(lambda: handle_start_button_click(self))
-        
+        self.selectedFilePaths = []  
+        self.importedFiles = importedFiles  # Store the imported files
+
 
     def handleFileSelectionChanged(self, item):
-        if item.checkState() == QtCore.Qt.Checked:
-            print(f"File {item.text()} selected")
-            # Add logic to handle file selection
-        else:
-            print(f"File {item.text()} deselected")
-            # Add logic to handle file deselection
+        print("handleFileSelectionChanged called")
+        file_name = item.text()
+        print(f"File name from item: {file_name}")
+
+        file_path_found = False
+        for file_path in self.importedFiles:
+            if QtCore.QFileInfo(file_path).fileName() == file_name:
+                file_path_found = True
+                if item.checkState() == QtCore.Qt.Checked:
+                    print(f"Selected file path: {file_path}")
+                    if file_path not in self.selectedFilePaths:
+                        self.selectedFilePaths.append(file_path)
+                        print(f"Added to selectedFilePaths: {file_path}")
+                elif item.checkState() == QtCore.Qt.Unchecked:
+                    if file_path in self.selectedFilePaths:
+                        self.selectedFilePaths.remove(file_path)
+                        print(f"Removed from selectedFilePaths: {file_path}")
+                break
+    
+        if not file_path_found:
+            print(f"No matching file path found for: {file_name}")
+
+
+
+
+
+
 
     def applyStylingRunOptions(self):
         try:
@@ -94,12 +129,6 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
         self.stopButton.clicked.connect(self.handle_stop_button_click)  # Assuming you have a stopButton
 
 
-    def load_file_paths(self):
-        try:
-            with open('imported_files.txt', 'r') as f:
-                self.importedFiles = [line.strip() for line in f.readlines()]
-        except FileNotFoundError:
-            print("No previously imported files found.")
 
     def keyPressEvent(self, event):
         current_run_type = run_manager.get_run_type()
@@ -121,31 +150,35 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
         self.fileList.clear()
         for file_path in self.importedFiles:
             file_name = QtCore.QFileInfo(file_path).fileName()
+            list_widget_item = QtWidgets.QListWidgetItem(file_name)
+            list_widget_item.setData(QtCore.Qt.UserRole, file_path)
 
-            # Create the list item with a widget
-            list_widget_item = QtWidgets.QListWidgetItem(self.fileList)
+            # Create the widget to display the file name and remove button
             file_widget = QtWidgets.QWidget()
             file_layout = QtWidgets.QHBoxLayout(file_widget)
-            file_layout.setContentsMargins(10, 10, 10, 10)  # Adjust margins as needed
+            file_layout.setContentsMargins(10, 10, 10, 10)
 
             # Create and add the label for the file name
             label = QtWidgets.QLabel(file_name)
-            file_layout.addWidget(label, 1)  # Ensure label takes up available space
+            file_layout.addWidget(label, 1)
 
             # Create and add the 'X' button
             remove_button = QtWidgets.QPushButton()
             remove_button.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
             remove_button.setObjectName("removeButton")
-            remove_button.setText("✕")  # Unicode character for 'X' symbol
-            remove_button.setFlat(True)  # Remove button styling
-            remove_button.clicked.connect(lambda checked, i=list_widget_item: self.remove_file(i))
+            remove_button.setText("✕")
+            remove_button.setFlat(True)
+            remove_button.clicked.connect(lambda checked, item=list_widget_item: self.remove_file(item))
 
-            file_layout.addWidget(remove_button, 0)  # Ensure button doesn't expand
+            file_layout.addWidget(remove_button, 0)
 
             file_widget.setLayout(file_layout)
             list_widget_item.setSizeHint(file_widget.sizeHint())
+
+            # Add the list item and its associated widget to the file list
             self.fileList.addItem(list_widget_item)
             self.fileList.setItemWidget(list_widget_item, file_widget)
+
 
     def import_csv_files(self):
         # Open file dialog to select CSV files
@@ -187,7 +220,7 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
             list_widget_item.setSizeHint(file_widget.sizeHint())
             self.fileList.addItem(list_widget_item)
             self.fileList.setItemWidget(list_widget_item, file_widget)
-
+        
 
 
     def remove_file(self, item):
@@ -218,9 +251,14 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
 
 
     def save_file_paths(self):
-        with open('imported_files.txt', 'w') as f:
-            for file_path in self.importedFiles:
-                f.write(f"{file_path}\n")
+        try:
+            with open('imported_files.txt', 'w') as f:
+                for file_path in self.importedFiles:
+                    f.write(f"{file_path}\n")
+            print("File paths saved successfully.")
+        except Exception as e:
+            print("Error saving file paths:", e)
+
 
 
     def applyStyling(self):
@@ -244,14 +282,18 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
             print("No previously imported files found.")
 
     def show_run_options(self):
-        self.run_options_dialog = RunOptionsDialog(self)
-        # Populate the file list in the RunOptionsDialog
+        if hasattr(self, 'run_options_dialog'):
+            self.run_options_dialog.ui.fileListWidget.itemChanged.disconnect()
+        self.run_options_dialog = RunOptionsDialog(self, self.importedFiles)
         self.run_options_dialog.ui.fileListWidget.clear()
+
         for file_path in self.importedFiles:
             item = QtWidgets.QListWidgetItem(QtCore.QFileInfo(file_path).fileName())
             item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
             item.setCheckState(QtCore.Qt.Unchecked)
             self.run_options_dialog.ui.fileListWidget.addItem(item)
+            # Connect the itemChanged signal to handleFileSelectionChanged
+            self.run_options_dialog.ui.fileListWidget.itemChanged.connect(self.run_options_dialog.handleFileSelectionChanged)
         self.run_options_dialog.show()
 
     def handle_stop_button_click(self):

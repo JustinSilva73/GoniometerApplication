@@ -75,17 +75,6 @@
    </item>
    <!-- Offset and Step count layout -->
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayoutOffset">
-     <item>
-      <widget class="QLabel" name="labelOffset">
-       <property name="text">
-        <string>Offset:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="lineEditOffset"/>
-     </item>
      <item>
       <widget class="QLabel" name="labelStepCount">
        <property name="text">
