@@ -10,10 +10,24 @@
     <rowstretch>1,1,1,1,1,1,2</rowstretch>
    <item row="0" column="0" colspan="6">
     <widget class="QFrame" name="topRowContainer">
+        <property name="minimumSize">
+            <size>
+                <width>0</width>
+                <height>60</height> <!-- Set a larger minimum height -->
+            </size>
+        </property>
         <layout class="QHBoxLayout" name="topRowLayout">
         <item>
             <widget class="QLabel" name="logoLabel">
-            <!-- Logo Label properties -->
+                <property name="minimumSize">
+                    <size>
+                        <width>35</width> <!-- Desired minimum width -->
+                        <height>50</height> <!-- Desired minimum height -->
+                    </size>
+                </property>
+                 <property name="alignment">
+                    <set>Qt::AlignVCenter</set> <!-- Align vertically center -->
+                </property>
             </widget>
         </item>
         <item>
@@ -294,8 +308,8 @@
             </property>
             <property name="minimumSize">
                 <size>
-                    <width>200</width>
-                    <height>100</height> <!-- Set a reasonable minimum height -->
+                    <width>0</width>
+                    <height>200</height> <!-- Set a reasonable minimum height -->
                 </size>
             </property>
             <!-- Remove maximumHeight if you have it to allow for flexible sizing -->

@@ -29,8 +29,8 @@ def handle_start_button_click(run_options_dialog):
         run_type_str = 'Steps'
     elif run_options_dialog.ui.radioButtonFiles.isChecked():
         run_type_str = 'Files'
-    elif run_options_dialog.ui.radioButtonIndefinite.isChecked():
-        run_type_str = 'Indefinite'
+    elif run_options_dialog.ui.radioButtonAxisControl.isChecked():
+        run_type_str = 'Axis Control'
 
     if run_type_str is None:
         QtWidgets.QMessageBox.warning(run_options_dialog, "Warning", "Please select a run type.")
@@ -108,7 +108,9 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
         logo_image = QPixmap('Assets/Logo.jpg')
 
         # Set the pixmap to the existing logoLabel
-        self.logoLabel.setPixmap(logo_image.scaled(self.logoLabel.size(), QtCore.Qt.KeepAspectRatio))
+        # Assuming 'logo_image' is a QPixmap object
+        scaled_logo = logo_image.scaled(self.logoLabel.width(), self.logoLabel.height(), QtCore.Qt.KeepAspectRatio)
+        self.logoLabel.setPixmap(scaled_logo)
         # Get the screen resolution
         screen = QtWidgets.QApplication.primaryScreen()
         rect = screen.availableGeometry()
@@ -132,7 +134,7 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
 
     def keyPressEvent(self, event):
         current_run_type = run_manager.get_run_type()
-        if hasattr(current_run_type, 'run_type_id') and current_run_type.run_type_id == 'Indefinite':
+        if hasattr(current_run_type, 'run_type_id') and current_run_type.run_type_id == 'Axis Control':
             if not run_manager.ser or not run_manager.ser.isOpen():
                 print("Serial connection not open. Please press Start.")
                 return
@@ -178,8 +180,8 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
             # Add the list item and its associated widget to the file list
             self.fileList.addItem(list_widget_item)
             self.fileList.setItemWidget(list_widget_item, file_widget)
-
-
+           
+           
     def import_csv_files(self):
         # Open file dialog to select CSV files
         options = QtWidgets.QFileDialog.Options()
@@ -305,3 +307,10 @@ if __name__ == "__main__":
     mainWindow = ControlPanelApp()
     mainWindow.show()
     sys.exit(app.exec_())
+
+
+
+
+    #self.fileListWidget = QtWidgets.QListWidget(self.groupBoxFiles)
+    #self.fileListWidget.setObjectName("fileListWidget")
+    #self.verticalLayoutFiles.addWidget(self.fileListWidget)

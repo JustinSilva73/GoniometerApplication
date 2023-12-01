@@ -1,6 +1,6 @@
 from ModeRun import RunManager
-class IndefiniteRun(RunManager):
-    run_type_id = 'Indefinite'
+class AxisControlRun(RunManager):
+    run_type_id = 'Axis Control Run'
 
     def adjust_angle(self, angle_change):
         new_angle = RunManager.current_angle + angle_change
