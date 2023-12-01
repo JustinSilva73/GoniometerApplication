@@ -52,9 +52,9 @@ class RunManager:
 
 
     def create_run_type(self, run_type_str, file_paths=None):
-        if run_type_str == 'Indefinite':
-            from IndefiniteRun import IndefiniteRun
-            return IndefiniteRun()
+        if run_type_str == 'Axis Control':
+            from AxisControlRun import AxisControlRun
+            return AxisControlRun()
         elif run_type_str == 'Steps':
             from StepsRun import StepsRun
             return StepsRun()
@@ -73,8 +73,8 @@ class RunManager:
                 log_display.appendPlainText("No files selected.")
         elif run_type_str == 'Steps':
             pass  # Initialize Steps run if necessary
-        elif run_type_str == 'Indefinite':
-            pass  # Initialize Indefinite run if necessary
+        elif run_type_str == 'Axis Control':
+            pass  # Initialize Axis Control run if necessary
 
         log_display.appendPlainText(f"Starting {run_type_str} mode")
         run_checks = StartingRunChecks(log_display, "COM4", 115200)

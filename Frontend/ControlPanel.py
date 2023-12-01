@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'servo_control.ui'
+# Form implementation generated from reading ui file 'controlpanel.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.10
 #
@@ -17,10 +17,13 @@ class Ui_ControlPanelWindow(object):
         self.gridLayout = QtWidgets.QGridLayout(ControlPanelWindow)
         self.gridLayout.setObjectName("gridLayout")
         self.topRowContainer = QtWidgets.QFrame(ControlPanelWindow)
+        self.topRowContainer.setMinimumSize(QtCore.QSize(0, 60))
         self.topRowContainer.setObjectName("topRowContainer")
         self.topRowLayout = QtWidgets.QHBoxLayout(self.topRowContainer)
         self.topRowLayout.setObjectName("topRowLayout")
         self.logoLabel = QtWidgets.QLabel(self.topRowContainer)
+        self.logoLabel.setMinimumSize(QtCore.QSize(35, 50))
+        self.logoLabel.setAlignment(QtCore.Qt.AlignVCenter)
         self.logoLabel.setObjectName("logoLabel")
         self.topRowLayout.addWidget(self.logoLabel)
         self.versionLabel = QtWidgets.QLabel(self.topRowContainer)
@@ -168,7 +171,7 @@ class Ui_ControlPanelWindow(object):
         self.gridLayout.addWidget(self.logTitleLabel, 6, 0, 1, 6)
         self.logDisplay = QtWidgets.QPlainTextEdit(ControlPanelWindow)
         self.logDisplay.setReadOnly(True)
-        self.logDisplay.setMinimumSize(QtCore.QSize(200, 100))
+        self.logDisplay.setMinimumSize(QtCore.QSize(0, 200))
         self.logDisplay.setObjectName("logDisplay")
         self.gridLayout.addWidget(self.logDisplay, 7, 0, 1, 6)
 

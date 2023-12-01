@@ -4,13 +4,13 @@ QWidget {
 }
 QPushButton {
     background-color: #E3E3E3;
-    border: none;
     color: black;
     padding: 15px 32px;
     text-align: center;
     text-decoration: none;
     font-size: 16px;
     margin: 4px 2px;
+    border: #000000;
     border-radius: 8px; /* Rounded corners */
 }
 QPushButton#pitchDownButton, QPushButton#pitchUpButton,
@@ -37,17 +37,20 @@ QGroupBox:title {
 }
 QLCDNumber {
     background-color: #121212; /* Dark background for LCD */
-    color: #4CAF50; /* Green text */
+    color: #000000; /* Green text */
 }
 QLabel {
     font-size: 18px; /* Larger font size for labels */
 }
 QListWidget {
-    border: 1px solid #ffffff; /* White border */
-    color: #E3E3E3; /* White text */
+    background-color: #ffffff; /* Light background */
+    color: #000000; /* Dark text for readability */
+    font-size: 16px; /* Adjust the size as needed */
+    /* other styles */
 }
-QPlainTextEdit{
-    background-color: #969696; /* Dark background for LCD */
+QPlainTextEdit {
+    background-color: #7E8584;
+    font-size: 18px; /* Larger font size for logs */
 }
 
 #topRowContainer{
@@ -57,8 +60,11 @@ QPlainTextEdit{
     background-color: #09496d; 
 }
 #logoLabel, #versionLabel {
-    background-color: #09496d; 
-    /* Other style properties */
+    background-color: #09496d;
+    color: #FFFFFF; /* Assuming you want white text */
+    font-size: 24px; /* Increased font size */
+    padding: 5px; /* Add padding for more space */
+    margin-bottom: 5px;
 }
 QLineEdit {
     font-size: 20px; 
@@ -70,42 +76,47 @@ QLineEdit {
 }
 
 QListWidget#fileList {
-    background-color: #ffffff; 
+    background-color: #ffffff;
     border: 1px solid #dcdcdc;
+    font-size: 18px; /* Larger font size for file names */
 }
 
 /* Style for QListWidget items */
 QListWidget#fileList::item {
-    border-bottom: 1px solid #eaeaea; 
-    padding: 5px; 
+    border-bottom: 1px solid #eaeaea;
+    padding: 0px; /* Increased padding for larger area */
 }
 
 /* Style for the QPushButton inside the QListWidget item */
 QListWidget#fileList QPushButton {
-    background-color: #f0f0f0; /* light grey background */
-    border: 1px solid #cccccc; /* grey border */
-    border-radius: 5px; /* rounded corners */
-    padding: 5px 10px; /* padding inside the button */
-    margin-right: 5px; /* margin to the right of the button */
+    background-color: transparent; 
+    border: none; 
+    color: #FF0000;
+    padding: 0px; 
+    margin-right: 5px; 
 }
 
-/* Style for the QPushButton used to import files */
 QPushButton#importButton {
-    background-color: #c9c9c9; /* green background */
-    color: white; /* white text */
+    background-color: #E3E3E3;
+    color: rgb(0, 0, 0); 
     border: none;
     padding: 10px 15px;
     border-radius: 5px;
-    font-weight: bold;
 }
 QPushButton#removeButton {
+    background-color: transparent;
     border: none;
-    background: transparent;
-    color: #555;  /* or any color you prefer */
+    color: #FF0000; 
     font-weight: bold;
     padding: 0px;
-    margin: 0px;
 }
-QPushButton#removeButton:hover {
-    color: #ff0000;  /* color change on hover for visual feedback */
+
+QListWidget#fileList QPushButton:hover {
+    background-color: rgba(255, 0, 0, 0.1); 
+    border-radius: 5px;
+}
+
+QListWidget::item {
+    padding: 5px;
+    border-bottom: 1px solid #eaeaea; /* This adds a separator which might help in readability */
 }

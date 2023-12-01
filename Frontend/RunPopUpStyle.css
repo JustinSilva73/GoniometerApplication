@@ -1,20 +1,21 @@
 /* General widget styling */
 QWidget {
-    background-color: #f0f0f0; /* Light grey background */
+    background-color: #f0f0f0; /* Adjust if different background color is needed */
 }
-
 /* Button styling */
 QPushButton {
     border: 1px solid #c8c8c8;
     border-radius: 4px;
-    background-color: #f0f0f0;
-    padding: 10px; /* Padding around text */
-    margin: 5px; /* Margin around buttons */
-    border-radius: 5px; /* Rounded corners */
+    background-color: #c8c8c8; /* Blue background color for buttons */
+    color: rgb(0, 0, 0); /* Text color for buttons */
+    padding: 5px 15px; /* Adjust padding to match the desired look */
+    margin: 2px; /* Adjust margin to match the desired look */
 }
-
 QPushButton:hover {
-    background-color: #e5e5e5;
+    background-color: #09496d; /* Color for button hover state */
+}
+QListWidget#fileListWidget::item {
+    font-size: 8px; 
 }
 
 QPushButton:pressed {
@@ -23,15 +24,18 @@ QPushButton:pressed {
 
 /* Group box styling */
 QGroupBox {
-    border: 1px solid #c8c8c8;
-    border-radius: 5px;
-    margin-top: 1ex; /* leave space at the top for the title */
+    border: 0; /* Removes border */
+    margin-top: 0px; /* Adjust as needed */
+    padding-top: 0px; /* Adjust as needed */
 }
 
 QGroupBox::title {
+    
     padding: 0 3px;
+    background-color: transparent; /* Makes background transparent */
+    color: #000000; /* Color for the group box title */
+    font-weight: bold; /* Makes the text bold */
 }
-
 
 /* Label styling */
 QLabel {
@@ -51,8 +55,8 @@ QCheckBox::indicator {
 
 /* Line edit styling */
 QLineEdit {
-    border: 1px solid #000000; /* Light grey border */
-    border-radius: 3px; /* Rounded corners */
+    border: 1px solid #c8c8c8;
+    border-radius: 4px;
     padding: 5px; /* Padding inside the line edit */
 }
 
@@ -82,4 +86,12 @@ QPlainTextEdit {
     border: 1px solid #ccc; /* Light grey border */
     border-radius: 5px; /* Rounded corners */
     padding: 5px; /* Padding inside the text edit */
+}
+QLabel#headerLabel {
+    font-size: 14px;
+    font-weight: bold;
+    color: #ffffff; /* Or whatever color you want */
+    padding: 10px; /* Adjust padding to match the desired look */
+    background-color: #09496d; /* Adjust if different background color is needed */
+    /* Add other properties like text alignment, margins, etc. */
 }
