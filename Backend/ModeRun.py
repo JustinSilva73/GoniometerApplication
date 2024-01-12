@@ -4,7 +4,11 @@ import time
 import serial.tools.list_ports
 import pandas as pd
 from Connection import StartingRunChecks
-
+from dotenv import load_dotenv
+import os
+load_dotenv()
+comPort = os.getenv("comPort")
+baudRate = os.getenv("baudRate")
 class RunManager:
     ser = None  # class-level attribute for the serial connection
     current_angle = 90  # class-level attribute for the angle
@@ -15,7 +19,7 @@ class RunManager:
 
     def get_run_type(self):
         # Returns the current run type instance
-        return self.run_type_id
+        return self.run_type_idW
     
     def load_flight_data(self, file_path):
         self.flight_data = pd.read_csv(file_path)
@@ -25,7 +29,7 @@ class RunManager:
     def open_serial_connection(self):
         if not RunManager.ser or not RunManager.ser.isOpen():
             try:
-                RunManager.ser = serial.Serial('COM4', 115200, timeout=1)
+                RunManager.ser = serial.Serial(comPort, baudRate, timeout=1)
                 print("Serial connection opened.")
             except serial.SerialException as e:
                 print(f"Error opening serial connection: {e}")
@@ -63,7 +67,6 @@ class RunManager:
             return FilesRun(file_paths)  # Pass file paths to FilesRun
         return None
 
-    
     def start_run_type(self, run_type_str, log_display, run_options_dialog, selected_files=None):
         if run_type_str == 'Files':
             if selected_files:
@@ -77,7 +80,7 @@ class RunManager:
             pass  # Initialize Axis Control run if necessary
 
         log_display.appendPlainText(f"Starting {run_type_str} mode")
-        run_checks = StartingRunChecks(log_display, "COM4", 115200)
+        run_checks = StartingRunChecks(log_display, comPort, baudRate)
         if run_checks.check_serial_connection():
             self.open_serial_connection()  # Open serial connection after successful checks
             run_options_dialog.accept()
