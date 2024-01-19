@@ -6,12 +6,19 @@ import pandas as pd
 from Connection import StartingRunChecks
 from dotenv import load_dotenv
 import os
+import logging
+import sys
+
+logger = logging.getLogger(os.getenv("logFile"))
+logger.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
 load_dotenv()
 comPort = os.getenv("comPort")
 baudRate = os.getenv("baudRate")
 class RunManager:
-    ser = None  # class-level attribute for the serial connection
-    current_angle = 90  # class-level attribute for the angle
+    ser = None  
+    current_angle = 90  
 
     
     def set_run_type(self, run_type):
@@ -54,6 +61,21 @@ class RunManager:
         except serial.SerialException as e:
             print(f"Serial communication error: {e}")
 
+    def send_file_data_to_arduino(self):
+        if not RunManager.ser or not RunManager.ser.isOpen():
+            print("Serial connection not open. Attempting to open...")
+            self.open_serial_connection()
+            if not RunManager.ser or not RunManager.ser.isOpen():
+                print("Failed to open serial connection.")
+                return
+        try:
+            for index, row in self.flight_data.iterrows():
+                command = f"{row['Angle']}\n"
+                RunManager.ser.write(command.encode())
+                print(f"Sent command: {command}")
+                time.sleep(row['Time'])
+        except serial.SerialException as e:
+            print(f"Serial communication error: {e}")
 
     def create_run_type(self, run_type_str, file_paths=None):
         if run_type_str == 'Axis Control':
@@ -71,14 +93,12 @@ class RunManager:
         if run_type_str == 'Files':
             if selected_files:
                 log_display.appendPlainText(f"Selected file paths: {selected_files}")
-                
             else:
                 log_display.appendPlainText("No files selected.")
         elif run_type_str == 'Steps':
             pass  # Initialize Steps run if necessary
         elif run_type_str == 'Axis Control':
             pass  # Initialize Axis Control run if necessary
-
         log_display.appendPlainText(f"Starting {run_type_str} mode")
         run_checks = StartingRunChecks(log_display, comPort, baudRate)
         if run_checks.check_serial_connection():
