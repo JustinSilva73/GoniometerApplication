@@ -3,13 +3,14 @@ import time
 from ModeRun import RunManager
 from PyQt5 import QtCore
 import logging
-
+import os
+import serial
 # Create a logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 # Create a file handler and set the log level
-file_handler = logging.FileHandler('logfile.log')
+file_handler = logging.FileHandler(os.getenv("logFile"))
 file_handler.setLevel(logging.INFO)
 
 # Create a formatter and add it to the file handler
@@ -48,9 +49,13 @@ class FilesRun(RunManager):
             self.load_next_file()
 
     def execute_command(self):
-        # Execute the command
+    # Execute the command
         actual_time = time.time() - self.start_time  # Calculate actual time elapsed since start
-        print(f"Executing at {self.next_time} (scheduled), {actual_time:.2f} (actual): Set angle to {self.next_angle}")
+        actual_time_seconds = int(actual_time)
+        actual_time_milliseconds = int((actual_time - actual_time_seconds) * 1000)
+        log_message = f"Executing at {self.next_time}s (scheduled), {actual_time_seconds}s {actual_time_milliseconds}ms (actual): Set angle to {self.next_angle} degrees"
+        print(log_message)
+        logger.info(log_message)  # Print to log file
         RunManager.current_angle = self.next_angle
         self.send_angle_to_arduino()
         self.schedule_next_command()
@@ -82,6 +87,21 @@ class FilesRun(RunManager):
         logger.info(f"Current file:{self.current_file}")
         self.send_file_data_to_arduino()
         self.log_sent_data()
-        
+    
+    def send_file_data_to_arduino(self):
+        if not RunManager.ser or not RunManager.ser.isOpen():
+            print("Serial connection not open. Attempting to open...")
+            self.open_serial_connection()
+            if not RunManager.ser or not RunManager.ser.isOpen():
+                print("Failed to open serial connection.")
+                return
+        try:
+            for index, row in self.flight_data.iterrows():
+                command = f"{row['Angle']}\n"
+                RunManager.ser.write(command.encode())
+                print(f"Sent command: {command}")
+                time.sleep(row['Time'])
+        except serial.SerialException as e:
+            print(f"Serial communication error: {e}")
 
     

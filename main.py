@@ -299,7 +299,7 @@ class ControlPanelApp(QtWidgets.QWidget, Ui_ControlPanelWindow):
         self.run_options_dialog.show()
 
     def handle_stop_button_click(self):
-        run_manager.close_serial_connection()
+        self.stop_run_type()
 
 
 if __name__ == "__main__":

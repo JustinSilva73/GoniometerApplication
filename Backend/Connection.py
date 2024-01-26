@@ -3,6 +3,14 @@ import serial
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
+from ModeRun import RunManager
+from dotenv import load_dotenv
+import os
+import sys
+
+load_dotenv()
+comPort = os.getenv("comPort")
+baudRate = os.getenv("baudRate")
 class StartingRunChecks:
     def __init__(self, log_display_widget, com_port, baud_rate):
         self.log_display = log_display_widget
@@ -22,3 +30,16 @@ class StartingRunChecks:
             # Handle the exception and append to logDisplay
             self.log_display.appendPlainText(f"Serial connection failed: {e}")
             QtWidgets.QMessageBox.critical(None, "Serial Connection Error", f"Could not open serial port {self.com_port}: {e}")
+    
+    def open_serial_connection(self):
+        if not RunManager.ser or not RunManager.ser.isOpen():
+            try:
+                RunManager.ser = serial.Serial(comPort, baudRate, timeout=1)
+                print("Serial connection opened.")
+            except serial.SerialException as e:
+                print(f"Error opening serial connection: {e}")
+
+    def close_serial_connection(self):
+        if RunManager.ser and RunManager.ser.isOpen():
+            RunManager.ser.close()
+            print("Serial connection closed.")
