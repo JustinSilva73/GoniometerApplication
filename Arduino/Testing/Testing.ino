@@ -16,7 +16,7 @@ void loop() {
     if (data.length() > 0 && targetAngle >= 0 && targetAngle <= 180) {
       moveToAngle(targetAngle);
       Serial.print("Moved to angle: ");
-      Serial.println(targetAngle); // Send confirmation back to Python
+      Serial.println(targetAngle); 
     }
     while (Serial.available()) Serial.read(); // Clear the serial buffer
   }

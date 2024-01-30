@@ -61,6 +61,10 @@ class RunManager:
             command = f"{RunManager.current_angle}\n"
             RunManager.ser.write(command.encode())
             print(f"Sent command: {command}")
+            response = RunManager.ser.readline().decode().strip()
+            print(f"Received response: {response}")
+            current_angle = int(response)
+            print(f"Current angle: {current_angle}")
         except serial.SerialException as e:
             print(f"Serial communication error: {e}")
 
