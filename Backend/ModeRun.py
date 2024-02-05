@@ -61,21 +61,28 @@ class RunManager:
             command = f"{RunManager.current_angle}\n"
             RunManager.ser.write(command.encode())
             print(f"Sent command: {command}")
-        except serial.SerialException as e:
+        except serial.SerialTimeoutException as e:
             print(f"Serial communication error: {e}")
 
     
 
     def create_run_type(self, run_type_str, file_paths=None):
+        logging_message = f"Creating {run_type_str} instance"
+        logger.info(logging_message)
         if run_type_str == 'Axis Control':
             from AxisControlRun import AxisControlRun
+            run_type_str == AxisControlRun()
             return AxisControlRun()
         elif run_type_str == 'Steps':
             from StepsRun import StepsRun
+            run_type_str == StepsRun()
             return StepsRun()
         elif run_type_str == 'Files':
             from FilesRun import FilesRun
+            run_type_str == FilesRun()
             return FilesRun(file_paths)  # Pass file paths to FilesRun
+        else:
+            logger.warning(f"Warning - Unknown run type: {run_type_str}")
         return None
 
     def start_run_type(self, run_type_str, log_display, run_options_dialog, selected_files=None):
