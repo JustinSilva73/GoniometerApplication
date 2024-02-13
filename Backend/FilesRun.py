@@ -70,17 +70,19 @@ class FilesRun(RunManager):
             self.timer.stop()  # Stop the timer if all files are processed
 
     def load_all_files(self):
+
+        all_data = pd.DataFrame()  # Create an empty DataFrame to store all the data
         while self.current_file_index < len(self.file_paths):
-            self.current_file = pd.concat([self.current_file, pd.read_csv(self.file_paths[self.current_file_index], 
-                                            header=None, 
-                                            names=['time', 'angle'],
-                                            iterator=True, 
-                                            chunksize=1)])
+            data = pd.read_csv(self.file_paths[self.current_file_index], 
+                               header=None, 
+                               names=['time', 'angle'],
+                               iterator=True, 
+                               chunksize=1)
+            all_data = pd.concat([all_data, data])  # Concatenate the data to the all_data DataFrame
             self.current_file_index += 1
         
-        self.current_file['end'] = True  # Add 'end' column with value True to indicate end of information
-        logger.info(f"Current file:{self.current_file}")
-        self.send_file_data_to_arduino()
+        logger.info(f"All files data: {all_data}")
+        self.send_file_data_to_arduino(all_data, "Files")
         self.log_sent_data()
         
 

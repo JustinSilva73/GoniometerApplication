@@ -60,8 +60,8 @@ class RunManager:
             print(f"Sent command: {command}")
         except serial.SerialException as e:
             print(f"Serial communication error: {e}")
-
-    def send_file_data_to_arduino(self):
+    
+    def send_file_data_to_arduino(self, runFile):
         if not RunManager.ser or not RunManager.ser.isOpen():
             print("Serial connection not open. Attempting to open...")
             self.open_serial_connection()
@@ -69,11 +69,13 @@ class RunManager:
                 print("Failed to open serial connection.")
                 return
         try:
+            RunManager.ser.write(runFile.encode())
             for index, row in self.flight_data.iterrows():
-                command = f"{row['Angle']}\n"
+                angle = row['Angle']
+                time = row['Time']
+                command = f"{angle},{time}\n"
                 RunManager.ser.write(command.encode())
                 print(f"Sent command: {command}")
-                time.sleep(row['Time'])
         except serial.SerialException as e:
             print(f"Serial communication error: {e}")
 
