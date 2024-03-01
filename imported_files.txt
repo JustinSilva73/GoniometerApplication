@@ -1,2 +1,1 @@
-C:/Users/justi/Downloads/angles2.csv
-C:/Users/justi/Downloads/angles1.csv
+C:/Users/justi/Desktop/School/SeniorYear/Semester_1/Capstone/Testing/Application/random_data.csv

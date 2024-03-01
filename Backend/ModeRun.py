@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import os
 import logging
 import sys
+from MotorDriver.MotorSetup import Motor
 
 logger = logging.getLogger(os.getenv("logFile"))
 logger.setLevel(logging.INFO)
@@ -16,10 +17,11 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 load_dotenv()
 comPort = os.getenv("comPort")
 baudRate = os.getenv("baudRate")
+
 class RunManager:
     ser = None  
     current_angle = 90  
-
+    pitch = Motor(os.getenv("pitchSerial"))
     
     def set_run_type(self, run_type):
         self.run_type_id = run_type
@@ -61,6 +63,15 @@ class RunManager:
         except serial.SerialException as e:
             print(f"Serial communication error: {e}")
     
+ 
+    def send_angle_to_odrive(self, angle, duration_until_next_command):
+        # Convert the angle to a position
+        # Send the position to the ODrive
+        self.pitch.set_position(angle, duration_until_next_command)
+        if duration_until_next_command is not None:
+            print(f"Time until next command: {duration_until_next_command} seconds")
+
+
     def send_file_data_to_arduino(self, runFile):
         if not RunManager.ser or not RunManager.ser.isOpen():
             print("Serial connection not open. Attempting to open...")
@@ -102,12 +113,10 @@ class RunManager:
         elif run_type_str == 'Axis Control':
             pass  # Initialize Axis Control run if necessary
         log_display.appendPlainText(f"Starting {run_type_str} mode")
-        run_checks = StartingRunChecks(log_display, comPort, baudRate)
-        if run_checks.check_serial_connection():
-            self.open_serial_connection()  # Open serial connection after successful checks
-            run_options_dialog.accept()
-            run_type_instance = self.create_run_type(run_type_str, selected_files)
-            self.set_run_type(run_type_instance)
-
+        self.pitch.startMotor()
+        print("Motor Start")
+        run_type_instance = self.create_run_type(run_type_str, selected_files)
+        self.set_run_type(run_type_instance)
+    
 
 run_manager = RunManager()
