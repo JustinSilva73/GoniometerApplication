@@ -18,10 +18,11 @@ load_dotenv()
 comPort = os.getenv("comPort")
 baudRate = os.getenv("baudRate")
 
+
 class RunManager:
     ser = None  
     current_angle = 90  
-    pitch = Motor(os.getenv("pitchSerial"))
+    #pitch = Motor(os.getenv("pitchSerial"))
     
     def set_run_type(self, run_type):
         self.run_type_id = run_type
@@ -63,14 +64,6 @@ class RunManager:
         except serial.SerialException as e:
             print(f"Serial communication error: {e}")
     
- 
-    def send_angle_to_odrive(self, angle, duration_until_next_command):
-        # Convert the angle to a position
-        # Send the position to the ODrive
-        self.pitch.set_position(angle, duration_until_next_command)
-        if duration_until_next_command is not None:
-            print(f"Time until next command: {duration_until_next_command} seconds")
-
 
     def send_file_data_to_arduino(self, runFile):
         if not RunManager.ser or not RunManager.ser.isOpen():
@@ -90,32 +83,50 @@ class RunManager:
         except serial.SerialException as e:
             print(f"Serial communication error: {e}")
 
-    def create_run_type(self, run_type_str, file_paths=None):
+    def runFileData(self, runFile):
+        lastTime = 0
+        # Since runFile is now a DataFrame, this should work without error
+        for index, row in runFile.iterrows():
+            angle = row['angle']  # Use 'angle' as defined in the names parameter of read_csv
+            time = row['time']    # Use 'time' as defined in the names parameter of read_csv
+            #pitchMotor.set_position(angle, time - lastTime)
+            lastTime = time
+            print(f"Sent angle: {angle}, Sent time: {time}")
+
+    def create_run_type(self, run_type_str, file_paths=None, steps=None):
         if run_type_str == 'Axis Control':
             from AxisControlRun import AxisControlRun
             return AxisControlRun()
         elif run_type_str == 'Steps':
             from StepsRun import StepsRun
-            return StepsRun()
+            if file_paths and len(file_paths) > 0:
+                return StepsRun(steps, file_paths[0])
+            else:
+                raise ValueError("file_paths must be a non-empty list for 'Steps' run type.")
         elif run_type_str == 'Files':
             from FilesRun import FilesRun
             return FilesRun(file_paths)  # Pass file paths to FilesRun
         return None
 
-    def start_run_type(self, run_type_str, log_display, run_options_dialog, selected_files=None):
+    def start_run_type(self, run_type_str, log_display, run_options_dialog, selected_files=None, steps=None):
         if run_type_str == 'Files':
             if selected_files:
                 log_display.appendPlainText(f"Selected file paths: {selected_files}")
-            else:
-                log_display.appendPlainText("No files selected.")
+            if not selected_files:
+                log_display.appendPlainText("Error: No files selected. Please select at least one file.")
+                return  # Early return to prevent further processing
         elif run_type_str == 'Steps':
-            pass  # Initialize Steps run if necessary
+            if selected_files:
+                log_display.appendPlainText(f"Selected file paths: {selected_files}")
+            if not selected_files:
+                log_display.appendPlainText("Error: No files selected. Please select at least one file.")
+                return  # Early return to prevent further processing
         elif run_type_str == 'Axis Control':
             pass  # Initialize Axis Control run if necessary
         log_display.appendPlainText(f"Starting {run_type_str} mode")
-        self.pitch.startMotor()
+        #self.pitch.startMotor()
         print("Motor Start")
-        run_type_instance = self.create_run_type(run_type_str, selected_files)
+        run_type_instance = self.create_run_type(run_type_str, selected_files, steps)
         self.set_run_type(run_type_instance)
     
 

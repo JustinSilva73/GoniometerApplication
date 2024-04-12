@@ -22,66 +22,72 @@ logger.addHandler(file_handler)
 class FilesRun(RunManager):
     run_type_id = 'Files'
 
-    def __init__(self, file_paths):
+    def __init__(self, file_paths, Indefinite=False):
         super().__init__()
         self.file_paths = file_paths
         self.current_file_index = 0
         self.current_file = None
         self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.execute_command)
         self.start_time = None
         self.next_time = None
         self.next_angle = None
-        self.load_next_file()
+        if Indefinite == False:
+            self.run_files()
+        else:
+            self.run_indefinite()
 
     def log_sent_data(self):
         logger.info(f"Sent time: {self.next_time}, Sent angle: {self.next_angle}")
 
-    def schedule_next_command(self):
-        try:
-            row = next(self.current_file).iloc[0]
-            print("Row data:", row)  # Debugging line
-            self.next_time = row['time']
-            self.next_angle = row['angle']
-            # Calculate the time to execute the next command
-            time_to_execute = max(1, int((self.next_time - (time.time() - self.start_time)) * 1000))
-            self.timer.start(time_to_execute)
-        except StopIteration:
-            self.load_next_file()
-
-    def execute_command(self):
-        actual_time = time.time() - self.start_time  # Actual time elapsed
-        # Calculate the timeframe for the command execution
-        time_frame = self.next_time - actual_time
-        print(f"Executing at {self.next_time} (scheduled), {actual_time:.2f} (actual): Set angle to {self.next_angle}")
-        RunManager.current_angle = self.next_angle
-        # Pass the timeframe to the method
-        self.send_angle_to_odrive(self.next_angle, time_frame)
-        self.schedule_next_command()
-        
-    def load_next_file(self):
-        if self.current_file_index < len(self.file_paths):
-            self.current_file = pd.read_csv(self.file_paths[self.current_file_index], header=None, names=['time', 'angle'], iterator=True, chunksize=1)
-            self.start_time = time.time()
-            self.schedule_next_command()
-            self.current_file_index += 1
-        else:
-            self.timer.stop()
-
     def load_all_files(self):
-        all_data = pd.DataFrame()  # Create an empty DataFrame to store all the data
+        # List to hold the DataFrames from each file
+        data_frames = []
+        # Variable to keep track of the end time of the last file
+        last_time = 0
+        
+        # Iterate over all file paths and load data
         while self.current_file_index < len(self.file_paths):
-            data = pd.read_csv(self.file_paths[self.current_file_index], 
-                               header=None, 
-                               names=['time', 'angle'],
-                               iterator=True, 
-                               chunksize=1)
-            all_data = pd.concat([all_data, data])  # Concatenate the data to the all_data DataFrame
+            # Load the data in chunks from the current file
+            data_iter = pd.read_csv(self.file_paths[self.current_file_index],
+                                    header=None,
+                                    names=['time', 'angle'],
+                                    iterator=True,
+                                    chunksize=1)
+            
+            # Create a DataFrame for the current file
+            file_data = pd.concat([chunk for chunk in data_iter])
+            
+            # Adjust the 'time' column by adding the last time from the previous file
+            if last_time != 0:  # Skip this for the first file
+                file_data['time'] += last_time
+            
+            # Update the last_time for the next file
+            last_time = file_data['time'].iloc[-1]
+            
+            # Append the adjusted DataFrame to the list
+            data_frames.append(file_data)
+            
+            # Increment to move to the next file
             self.current_file_index += 1
         
-        logger.info(f"All files data: {all_data}")
-        self.send_file_data_to_arduino(all_data, "Files")
-        self.log_sent_data()
+        # Concatenate all DataFrames from each file into a single DataFrame
+        all_data = pd.concat(data_frames)
         
+        # Log the combined DataFrame
+        logger.info(f"All files data: {all_data}")
+        
+        return all_data
+    
+    def run_files(self):
+        runData = self.load_all_files()
+        self.runFileData(runData)
+        self.log_sent_data()
+
+    def run_indefinite(self):
+        runData = self.load_all_files()
+        
+        while True:
+            self.runFileData(runData)
+            self.log_sent_data()
 
     

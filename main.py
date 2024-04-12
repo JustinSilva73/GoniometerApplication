@@ -39,10 +39,9 @@ def handle_start_button_click(run_options_dialog):
     log_display = run_options_dialog.parent().logDisplay
     log_display.appendPlainText(f"Mode selected: {run_type_str}")
 
-    # Retrieve selected files if 'Files' run type is selected
-    selected_files = run_options_dialog.selectedFilePaths if run_type_str == 'Files' else None
-
-    run_manager.start_run_type(run_type_str, log_display, run_options_dialog, selected_files)
+    selected_files = run_options_dialog.selectedFilePaths
+    steps = 10
+    run_manager.start_run_type(run_type_str, log_display, run_options_dialog, selected_files, steps)
 
         
     
@@ -76,14 +75,9 @@ class RunOptionsDialog(QtWidgets.QDialog):
                         self.selectedFilePaths.remove(file_path)
                         print(f"Removed from selectedFilePaths: {file_path}")
                 break
-    
+
         if not file_path_found:
             print(f"No matching file path found for: {file_name}")
-
-
-
-
-
 
 
     def applyStylingRunOptions(self):
