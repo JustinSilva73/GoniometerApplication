@@ -1,3 +1,10 @@
+/* Purpose: This file contains the CSS styling for the RunPopUp widget. 
+There are some limitations to the styling CSS that have to be applied to Qt widgets instead
+Besides the CSS styling method is a good go to for improving styling but have to be careful for conflicts
+between styling in .ui and in the CSS file
+I mostly defined class CSS styling
+*/
+
 /* General widget styling */
 QWidget {
     background-color: #f0f0f0; /* Adjust if different background color is needed */
@@ -6,14 +13,18 @@ QWidget {
 QPushButton {
     border: 1px solid #c8c8c8;
     border-radius: 4px;
-    background-color: #c8c8c8; /* Blue background color for buttons */
-    color: rgb(0, 0, 0); /* Text color for buttons */
-    padding: 5px 15px; /* Adjust padding to match the desired look */
-    margin: 2px; /* Adjust margin to match the desired look */
+    background-color: #c8c8c8;
+    color: rgb(0, 0, 0);
+    padding: 5px 15px;
+    margin: 2px;
+    font-size: 12px; /* Standardized font size */
+    font-weight: normal; /* Standardized font weight */
 }
 QPushButton:hover {
-    background-color: #09496d; /* Color for button hover state */
+    background-color: #09496d;
+    color: white /* Color for button hover state */
 }
+
 QListWidget#fileListWidget::item {
     font-size: 8px; 
 }
@@ -30,16 +41,21 @@ QGroupBox {
 }
 
 QGroupBox::title {
-    
     padding: 0 3px;
-    background-color: transparent; /* Makes background transparent */
-    color: #000000; /* Color for the group box title */
-    font-weight: bold; /* Makes the text bold */
+    background-color: transparent;
+    color: #000000;
+    font-size: 16px; /* Increased font size */
+    font-weight: bold; /* Make sure it's bold */
 }
 
 /* Label styling */
 QLabel {
-    color: #000000; /* Dark grey text */
+    color: #000000;
+    font-size: 12px; /* Standardized font size */
+    font-weight: bold; /* Standardized font weight */
+    margin: 0;
+    padding: 0;
+    text-align: center;
 }
 
 
@@ -53,11 +69,11 @@ QCheckBox::indicator {
     height: 13px;
 }
 
-/* Line edit styling */
 QLineEdit {
     border: 1px solid #c8c8c8;
     border-radius: 4px;
-    padding: 5px; /* Padding inside the line edit */
+    padding: 5px;
+    /* Add any other styling you wish to apply */
 }
 
 /* Scroll area styling */
@@ -94,4 +110,9 @@ QLabel#headerLabel {
     padding: 10px; /* Adjust padding to match the desired look */
     background-color: #09496d; /* Adjust if different background color is needed */
     /* Add other properties like text alignment, margins, etc. */
+}
+
+QHBoxLayout {
+    margin: 0;
+    padding: 0;
 }

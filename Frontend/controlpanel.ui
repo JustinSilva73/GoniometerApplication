@@ -1,3 +1,11 @@
+<!-- Purpose: This file contains the UI design for the Control Panel. 
+The sections are labeled with comments to indicate the purpose of each section or just a descriptive enough class name.
+Use this command to convert the .ui file to a .py file: pyuic5 -x controlpanel.ui -o controlpanel.py
+NOTE THIS WIPES EVERYTHING IN CONTROLPANEL.PY EVEN IF .UI HAS PROBLEMS
+-->
+
+
+
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ControlPanelWindow</class>

@@ -1,9 +1,12 @@
+#Purpose: Axis Control mode to just pass the angle change to the motor
+# CURRENTLY NOT SET UP RIGHT WITH RUN THREAD SO DOES NOT WORK FULLY
+
 from ModeRun import RunManager
-class AxisControlRun(RunManager):
+class AxisControlRun():
     run_type_id = 'Axis Control'
 
+    def __init__(self, run_manager):
+        self.run_manager = run_manager
+
     def adjust_angle(self, angle_change):
-        new_angle = RunManager.current_angle + angle_change
-        new_angle = max(0, min(180, new_angle))
-        RunManager.current_angle = new_angle
-        self.send_angle_to_arduino()
+        self.run_manager.axis_control(angle_change)

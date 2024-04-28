@@ -1,3 +1,5 @@
+#Purpose: This was an old file for setting up connection to the arduino that will still be needed for later use with the lights being turned on and off
+
 import sys
 import serial
 from PyQt5 import QtWidgets
@@ -9,6 +11,8 @@ class StartingRunChecks:
         self.com_port = com_port
         self.baud_rate = baud_rate
 
+
+    # Checks the status of the serial connection 
     def check_serial_connection(self):
         try:
             with serial.Serial(self.com_port, self.baud_rate, timeout=1) as ser:
