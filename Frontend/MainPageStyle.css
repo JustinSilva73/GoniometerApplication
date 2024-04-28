@@ -1,3 +1,10 @@
+/* Purpose: This file contains the CSS styling for the ControlPanel widget. 
+There are some limitations to the styling CSS that have to be applied to Qt widgets instead
+Besides the CSS styling method is a good go to for improving styling but have to be careful for conflicts
+between styling in .ui and in the CSS file
+I mostly defined class CSS styling
+*/
+
 QWidget {
     background-color: #FFFFFF; /* Dark background */
     color: #000000; /* White text */
@@ -79,6 +86,8 @@ QListWidget#fileList {
     background-color: #ffffff;
     border: 1px solid #dcdcdc;
     font-size: 18px; /* Larger font size for file names */
+    width: 300px;  /* Set a specific width */
+
 }
 
 /* Style for QListWidget items */

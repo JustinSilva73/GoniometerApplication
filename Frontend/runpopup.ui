@@ -1,3 +1,9 @@
+<!-- Purpose: This file contains the UI design for the Run Options dialog box. 
+The sections are labeled with comments to indicate the purpose of each section or just a descriptive enough class name.
+Use this command to convert the .ui file to a .py file: pyuic5 -x runpopup.ui -o runpopup.py
+NOTE THIS WIPES EVERYTHING IN RUNPOPUP.PY EVEN IF .UI HAS PROBLEMS + ADD LINES FROM main.py
+-->
+
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>RunOptionsDialog</class>
@@ -7,7 +13,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>300</height>
+    <height>400</height>
    </rect>
  </property>
  <property name="windowTitle">
@@ -62,6 +68,13 @@
           </widget>
          </item>
          <item>
+          <widget class="QRadioButton" name="radioButtonIndefinite">
+           <property name="text">
+            <string>Indefinite</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QRadioButton" name="radioButtonAxisControl">
            <property name="text">
             <string>Axis Control</string>
@@ -103,8 +116,116 @@
       </item>
     </layout>
    </item>
-   <!-- Offset and Step count layout -->
-   
+   <!-- Container for Offset and Step count -->
+<item>
+  <layout class="QHBoxLayout" name="horizontalLayoutParameters">
+    <!-- Vertical layout for Offset -->
+    <item>
+      <spacer name="leftOffsetSpacer">
+        <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint">
+          <size>
+            <width>20</width> <!-- Adjust the width as needed -->
+            <height>20</height>
+          </size>
+        </property>
+      </spacer>
+    </item>
+    <item>
+      <layout class="QVBoxLayout" name="verticalLayoutOffset">
+        <item>
+          <widget class="QLabel" name="labelOffset">
+            <property name="text">
+              <string>Offset:</string>
+            </property>
+            <property name="alignment">
+              <set>Qt::AlignCenter</set>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QLineEdit" name="lineEditOffset">
+            <property name="text">
+              <string>0</string>
+            </property>
+            <property name="alignment">
+              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="validator">
+              <cstring>QIntValidator</cstring>
+            </property>
+          </widget>
+        </item>
+      </layout>
+    </item>
+    <!-- Spacer to separate Offset and Step count -->
+    <item>
+      <spacer name="horizontalSpacer">
+        <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+          <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+          <size>
+            <width>40</width>
+            <height>20</height>
+          </size>
+        </property>
+      </spacer>
+    </item>
+    <!-- Vertical layout for Step count -->
+    <item>
+      <layout class="QVBoxLayout" name="verticalLayoutStepCount">
+        <item>
+          <widget class="QLabel" name="labelSteps">
+            <property name="text">
+              <string>Step count:</string>
+            </property>
+            <property name="alignment">
+              <set>Qt::AlignCenter</set>
+            </property>
+          </widget>
+        </item>
+        <item>
+          <widget class="QLineEdit" name="lineEditSteps">
+            <property name="text">
+              <string>0</string>
+            </property>
+            <property name="alignment">
+              <set>Qt::AlignCenter</set>
+            </property>
+            <property name="validator">
+              <cstring>QIntValidator</cstring>
+            </property>
+          </widget>
+        </item>
+      </layout>
+    </item>
+    <item>
+      <spacer name="rightStepsSpacer">
+        <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType">
+          <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint">
+          <size>
+            <width>20</width> <!-- Adjust the width as needed -->
+            <height>20</height>
+          </size>
+        </property>
+      </spacer>
+    </item>
+  </layout>
+</item>
    <!-- Buttons layout -->
    <item>
     <layout class="QHBoxLayout" name="horizontalLayoutButtons">
