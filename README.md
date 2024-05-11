@@ -57,12 +57,3 @@ to update the process beacuse if not frontend will crash if interacted with.
 # Other files
 
 The files outside of the Frontend and Backend like GenerateCSV and GraphResults help for running and setting up the csvs and the results.
-
-
-# Additional information 
-
-Besides that look more in the files if you can along with reading up on odrive and PyQt documentation. I was the main HMI developer for this project with interfacing with the motor so I am going to leave my discord username here for whoever is working on this later down the road around Septemeber. Will try to remember to add anyone I get around then. If you need to ask questions or just need general help I will be more than willing to and I am on discord often enough that I should hopefully get back to you quick. Just for reference, I had no idea about PyQt or even interfacing with motors before doing this project. All I had done was an unfinished website, app, and game in my software engineering classes so give it some time to learn everything especially since you are continuing the project from a different team. Number 1 advice is just ask questions and be okay with not knowing stuff at first. 
-
-Discord: gorditochubs
-
-My name is Justin in case you do end up needing help.
